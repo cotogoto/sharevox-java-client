@@ -55,4 +55,4 @@ public class Main {
 
 ## お問い合わせ
 
-ご質問や提案がある場合は、[Issues](https://github.com/yourusername/voicevox-synthesis-java/issues)セクションでお知らせください。コントリビューションも歓迎します。
+ご質問や提案がある場合は、[Issues](https://github.com/blue-islands/voicevox-java-client/issues)セクションでお知らせください。コントリビューションも歓迎します。
