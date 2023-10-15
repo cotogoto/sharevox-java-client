@@ -2,18 +2,22 @@ package jp.livlog.voicevox;
 
 import java.io.IOException;
 
-public class Test {
+import ws.schild.jave.EncoderException;
 
-    public static void main(final String[] args) {
+class Test {
+
+    @org.junit.jupiter.api.Test
+    void test() {
 
         try {
-            final var audioData = VoicevoxSynthesis.synthesis(
-                    "この列車は、函館線、宗谷線直通、特急宗谷号・稚内行です。",
-                    1,
+            var audioData = VoicevoxSynthesis.synthesis(
+                    "こんにちは、VOICEVOXを試しています。",
+                    3,
                     false);
+            audioData = AudioConverter.convertWavToMp3(audioData);
             PlayWave.exec(audioData);
 
-        } catch (final IOException e) {
+        } catch (final IOException | EncoderException e) {
             e.printStackTrace();
         }
     }
