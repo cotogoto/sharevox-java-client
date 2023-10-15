@@ -10,7 +10,7 @@ Voicevox Synthesis Java Clientは、[VOICEVOX](https://voicevox.hiroshiba.jp/)�
 
 ## 動作環境
 
-- Java 8以降
+- Java 17以降
 - VOICEVOXエンジン（ローカルサーバー）のインストールと実行が必要です。[公式ウェブサイト](https://voicevox.hiroshiba.jp/)からダウンロードできます。
 
 ## インストール
