@@ -2,11 +2,11 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>jp.livlog</groupId>
     <artifactId>voicevox-java-client</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1-SNAPSHOT</version>
     <scm>
         <url>https://github.com/cotogoto/voicevox-java-client</url>
         <connection>scm:git:git@github.com:cotogoto/voicevox-java-client.git</connection>
-      <tag>v1.0.0</tag>
+      <tag>HEAD</tag>
   </scm>
     <distributionManagement>
         <repository>
