@@ -10,7 +10,7 @@ class Test {
     void test() {
 
         try {
-            final var response = VoicevoxSynthesis.synthesis(
+            final var response = SharevoxSynthesis.synthesis(
                     "こんにちは、SHAREVOXを試しています。",
                     3,
                     false);

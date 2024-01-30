@@ -15,7 +15,7 @@ import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 
 /**
- * VOICEVOX音声合成クラス.
+ * SHAREVOX音声合成クラス.
  * <p>
  * このクラスはVOICEVOXエンジンを使用してテキストから音声合成を行います。
  * VOICEVOXのローカルサーバーにリクエストを送信し、音声データを取得します。
@@ -23,7 +23,7 @@ import okhttp3.ResponseBody;
  * @author H. Aoshima
  * @version 1.0
  */
-public final class VoicevoxSynthesis {
+public final class SharevoxSynthesis {
 
     private static final OkHttpClient httpClient = new OkHttpClient.Builder()
             .connectTimeout(10, TimeUnit.SECONDS)
@@ -33,7 +33,7 @@ public final class VoicevoxSynthesis {
     /**
      * コンストラクタ. (このクラスはインスタンス化されません)
      */
-    private VoicevoxSynthesis() {
+    private SharevoxSynthesis() {
 
     }
 
@@ -63,7 +63,7 @@ public final class VoicevoxSynthesis {
                 .post(RequestBody.create(new byte[0], MediaType.get("application/json"))) // 空のリクエストボディを指定
                 .build();
 
-        final var queryResponse = VoicevoxSynthesis.httpClient.newCall(queryRequest).execute();
+        final var queryResponse = SharevoxSynthesis.httpClient.newCall(queryRequest).execute();
         if (!queryResponse.isSuccessful()) {
             throw new IOException("audio_query failed: " + queryResponse);
         }
@@ -95,7 +95,7 @@ public final class VoicevoxSynthesis {
                 .addHeader("accept", "audio/wav")
                 .addHeader("Content-Type", "application/json")
                 .build();
-        final var synthResponse = VoicevoxSynthesis.httpClient.newCall(synthRequest).execute();
+        final var synthResponse = SharevoxSynthesis.httpClient.newCall(synthRequest).execute();
         if (!synthResponse.isSuccessful()) {
             throw new IOException("synthesis failed: " + synthResponse);
         }
