@@ -10,11 +10,11 @@ class Test {
     void test() {
 
         try {
-            var audioData = VoicevoxSynthesis.synthesis(
+            final var response = VoicevoxSynthesis.synthesis(
                     "こんにちは、VOICEVOXを試しています。",
                     3,
                     false);
-            audioData = AudioConverter.convertWavToMp3(audioData);
+            final var audioData = AudioConverter.convertWavToMp3(response.bytes());
             PlayWave.exec(audioData);
 
         } catch (final IOException | EncoderException e) {

@@ -1,13 +1,18 @@
 package jp.livlog.voicevox;
 
 import java.io.IOException;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
+
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import okhttp3.HttpUrl;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
 
 /**
  * VOICEVOX音声合成クラス.
@@ -39,10 +44,13 @@ public final class VoicevoxSynthesis {
      * @param text テキスト
      * @param speaker スピーカーのID
      * @param enableInterrogativeUpspeak 疑問文の音調を有効にする場合はtrue、それ以外はfalse
-     * @return 音声データのバイト配列
+     * @return 音声データ
      * @throws IOException 音声合成に失敗した場合に発生する例外
      */
-    public static byte[] synthesis(final String text, final int speaker, final boolean enableInterrogativeUpspeak) throws IOException {
+    public static ResponseBody synthesis(final String text, final int speaker, final boolean enableInterrogativeUpspeak) throws IOException {
+
+        // 開始時間の記録
+        final var startTime = System.currentTimeMillis();
 
         // audio_query
         final var queryUrlBuilder = HttpUrl.parse("http://localhost:50021/audio_query").newBuilder();
@@ -60,7 +68,18 @@ public final class VoicevoxSynthesis {
             throw new IOException("audio_query failed: " + queryResponse);
         }
 
-        final var queryData = queryResponse.body().string();
+        var queryData = queryResponse.body().string();
+
+        final var gson = new Gson();
+        final var listType = new TypeToken <Map <String, Object>>() {
+        }.getType();
+        final Map <String, Object> map = gson.fromJson(queryData, listType);
+        map.put("outputSamplingRate", 16000);
+        queryData = gson.toJson(map);
+
+        // 音声合成のリクエスト前の終了時間とログ出力
+        final var preSynthesisTime = System.currentTimeMillis();
+        System.out.println("audio_query処理時間: " + (preSynthesisTime - startTime) + " ms");
 
         final var synthUrlBuilder = HttpUrl.parse("http://localhost:50021/synthesis").newBuilder();
         synthUrlBuilder.addQueryParameter("speaker", String.valueOf(speaker));
@@ -81,6 +100,11 @@ public final class VoicevoxSynthesis {
             throw new IOException("synthesis failed: " + synthResponse);
         }
 
-        return synthResponse.body().bytes();
+        // 音声合成のリクエスト後の終了時間とログ出力
+        final var postSynthesisTime = System.currentTimeMillis();
+        System.out.println("synthesis処理時間: " + (postSynthesisTime - preSynthesisTime) + " ms");
+        System.out.println("合計処理時間: " + (postSynthesisTime - startTime) + " ms");
+
+        return synthResponse.body();
     }
 }
