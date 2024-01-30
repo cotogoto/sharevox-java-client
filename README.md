@@ -13,16 +13,25 @@ Voicevox Synthesis Java Clientは、[VOICEVOX](https://voicevox.hiroshiba.jp/)�
 - Java 17以降
 - VOICEVOXエンジン（ローカルサーバー）のインストールと実行が必要です。[公式ウェブサイト](https://voicevox.hiroshiba.jp/)からダウンロードできます。
 
-## インストール
+## ダウンロード
+Latest Version:
+[![](https://jitpack.io/v/cotogoto/voicevox-java-client.svg)](https://jitpack.io/#cotogoto/voicevox-java-client)
 
-Mavenを使用してVoicevox Synthesisライブラリをプロジェクトに追加します。
+下記の **VERSION** キーを上記の最新バージョンに必ず置き換えてください
 
+Maven
 ```xml
 <dependency>
-    <groupId>jp.livlog</groupId>
-    <artifactId>voicevox-synthesis-java</artifactId>
-    <version>1.0.0</version> <!-- 最新バージョンを指定 -->
+    <groupId>com.github.cotogoto</groupId>
+    <artifactId>voicevox-java-client</artifactId>
+    <version>VERSION</version>
 </dependency>
+<repositories>
+    <repository>
+        <id>jitpack.io</id>
+        <url>https://jitpack.io</url>
+    </repository>
+</repositories>
 ```
 
 ## 使用法
