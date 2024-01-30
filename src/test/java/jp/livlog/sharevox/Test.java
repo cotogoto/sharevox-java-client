@@ -1,4 +1,4 @@
-package jp.livlog.voicevox;
+package jp.livlog.sharevox;
 
 import java.io.IOException;
 
@@ -11,7 +11,7 @@ class Test {
 
         try {
             final var response = VoicevoxSynthesis.synthesis(
-                    "こんにちは、VOICEVOXを試しています。",
+                    "こんにちは、SHAREVOXを試しています。",
                     3,
                     false);
             final var audioData = AudioConverter.convertWavToMp3(response.bytes());

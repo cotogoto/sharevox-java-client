@@ -1,4 +1,4 @@
-package jp.livlog.voicevox;
+package jp.livlog.sharevox;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;

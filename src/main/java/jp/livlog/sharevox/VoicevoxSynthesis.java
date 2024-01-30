@@ -1,4 +1,4 @@
-package jp.livlog.voicevox;
+package jp.livlog.sharevox;
 
 import java.io.IOException;
 import java.util.Map;
@@ -53,7 +53,7 @@ public final class VoicevoxSynthesis {
         final var startTime = System.currentTimeMillis();
 
         // audio_query
-        final var queryUrlBuilder = HttpUrl.parse("http://localhost:50021/audio_query").newBuilder();
+        final var queryUrlBuilder = HttpUrl.parse("http://localhost:50025/audio_query").newBuilder();
         queryUrlBuilder.addQueryParameter("text", text);
         queryUrlBuilder.addQueryParameter("speaker", String.valueOf(speaker));
         final var queryUrl = queryUrlBuilder.build().toString();
@@ -81,7 +81,7 @@ public final class VoicevoxSynthesis {
         final var preSynthesisTime = System.currentTimeMillis();
         System.out.println("audio_query処理時間: " + (preSynthesisTime - startTime) + " ms");
 
-        final var synthUrlBuilder = HttpUrl.parse("http://localhost:50021/synthesis").newBuilder();
+        final var synthUrlBuilder = HttpUrl.parse("http://localhost:50025/synthesis").newBuilder();
         synthUrlBuilder.addQueryParameter("speaker", String.valueOf(speaker));
         synthUrlBuilder.addQueryParameter("enable_interrogative_upspeak", String.valueOf(enableInterrogativeUpspeak));
         final var synthUrl = synthUrlBuilder.build().toString();
