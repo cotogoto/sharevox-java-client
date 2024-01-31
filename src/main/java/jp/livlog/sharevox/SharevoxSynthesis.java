@@ -17,8 +17,8 @@ import okhttp3.ResponseBody;
 /**
  * SHAREVOX音声合成クラス.
  * <p>
- * このクラスはVOICEVOXエンジンを使用してテキストから音声合成を行います。
- * VOICEVOXのローカルサーバーにリクエストを送信し、音声データを取得します。
+ * このクラスはSHAREVOXエンジンを使用してテキストから音声合成を行います。
+ * SHAREVOXのローカルサーバーにリクエストを送信し、音声データを取得します。
  * </p>
  * @author H. Aoshima
  * @version 1.0
