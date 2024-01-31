@@ -1,6 +1,6 @@
 # Sharevox Synthesis Java Client
 
-Sharevox Synthesis Java Clientは、[SHAREVOX](https://sharevox.hiroshiba.jp/)エンジンを使用してテキストから音声合成を行うためのJavaクライアントライブラリです。
+Sharevox Synthesis Java Clientは、[SHAREVOX](https://www.sharevox.app/)エンジンを使用してテキストから音声合成を行うためのJavaクライアントライブラリです。
 
 ## 特徴
 
@@ -11,7 +11,7 @@ Sharevox Synthesis Java Clientは、[SHAREVOX](https://sharevox.hiroshiba.jp/)�
 ## 動作環境
 
 - Java 17以降
-- SHAREVOXエンジン（ローカルサーバー）のインストールと実行が必要です。[公式ウェブサイト](https://sharevox.hiroshiba.jp/)からダウンロードできます。
+- SHAREVOXエンジン（ローカルサーバー）のインストールと実行が必要です。[公式ウェブサイト](https://www.sharevox.app/)からダウンロードできます。
 
 ## ダウンロード
 Latest Version:
@@ -56,8 +56,6 @@ public class Main {
 }
 ```
 
-詳細な使用法と設定オプションについては、[ドキュメンテーション](https://github.com/yourusername/sharevox-synthesis-java/wiki)を参照してください。
-
 ## ライセンス
 
 このプロジェクト自体ははMITライセンスの下で提供されています。詳細については[LICENSE](LICENSE)ファイルをご覧ください。
@@ -65,7 +63,7 @@ public class Main {
 
 ## SHAREVOXの商用利用について
 
-SHAREVOXを商用利用する場合、クレジット表記が必要です。詳細については、[SHAREVOX利用規約](https://sharevox.hiroshiba.jp/term/)をご確認ください。
+SHAREVOXを商用利用する場合、クレジット表記が必要です。詳細については、[SHAREVOX利用規約](https://www.sharevox.app/terms)をご確認ください。
 
 ### クレジット表記例
 
