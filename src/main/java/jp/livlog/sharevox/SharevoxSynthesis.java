@@ -14,97 +14,87 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 
-/**
- * SHAREVOX音声合成クラス.
- * <p>
- * このクラスはSHAREVOXエンジンを使用してテキストから音声合成を行います。
- * SHAREVOXのローカルサーバーにリクエストを送信し、音声データを取得します。
- * </p>
- * @author H. Aoshima
- * @version 1.0
- */
 public final class SharevoxSynthesis {
 
-    private static final OkHttpClient httpClient = new OkHttpClient.Builder()
+    private static final OkHttpClient httpClient           = new OkHttpClient.Builder()
             .connectTimeout(10, TimeUnit.SECONDS)
             .readTimeout(300, TimeUnit.SECONDS)
             .build();
 
-    /**
-     * コンストラクタ. (このクラスはインスタンス化されません)
-     */
+    private static final Gson         gson                 = new Gson();
+
+    private static final MediaType    JSON                 = MediaType.get("application/json");
+
+    private static final String       BASE_URL             = "http://localhost:50025";
+
+    private static final String       AUDIO_QUERY_ENDPOINT = "/audio_query";
+
+    private static final String       SYNTHESIS_ENDPOINT   = "/synthesis";
+
+    private static final int          OUTPUT_SAMPLING_RATE = 16000;
+
     private SharevoxSynthesis() {
 
     }
 
 
-    /**
-     * テキストから音声合成を行います.
-     *
-     * @param text テキスト
-     * @param speaker スピーカーのID
-     * @param enableInterrogativeUpspeak 疑問文の音調を有効にする場合はtrue、それ以外はfalse
-     * @return 音声データ
-     * @throws IOException 音声合成に失敗した場合に発生する例外
-     */
     public static ResponseBody synthesis(final String text, final int speaker, final boolean enableInterrogativeUpspeak) throws IOException {
 
-        // 開始時間の記録
-        final var startTime = System.currentTimeMillis();
+        final var queryData = SharevoxSynthesis.createAudioQuery(text, speaker);
+        return SharevoxSynthesis.executeSynthesis(queryData, speaker, enableInterrogativeUpspeak);
+    }
 
-        // audio_query
-        final var queryUrlBuilder = HttpUrl.parse("http://localhost:50025/audio_query").newBuilder();
-        queryUrlBuilder.addQueryParameter("text", text);
-        queryUrlBuilder.addQueryParameter("speaker", String.valueOf(speaker));
-        final var queryUrl = queryUrlBuilder.build().toString();
 
+    private static String createAudioQuery(final String text, final int speaker) throws IOException {
+
+        final var queryUrl = HttpUrl.parse(SharevoxSynthesis.BASE_URL + SharevoxSynthesis.AUDIO_QUERY_ENDPOINT)
+                .newBuilder()
+                .addQueryParameter("text", text)
+                .addQueryParameter("speaker", String.valueOf(speaker))
+                .build();
         final var queryRequest = new Request.Builder()
                 .url(queryUrl)
-                .post(RequestBody.create(new byte[0], MediaType.get("application/json"))) // 空のリクエストボディを指定
+                .post(RequestBody.create(new byte[0], SharevoxSynthesis.JSON)) // Empty body for POST request
                 .build();
 
-        final var queryResponse = SharevoxSynthesis.httpClient.newCall(queryRequest).execute();
-        if (!queryResponse.isSuccessful()) {
-            throw new IOException("audio_query failed: " + queryResponse);
+        try (var response = SharevoxSynthesis.httpClient.newCall(queryRequest).execute()) {
+            if (!response.isSuccessful()) {
+                throw new IOException("audio_query failed: HTTP code " + response.code());
+            }
+            try (var responseBody = response.body()) {
+                if (responseBody == null) {
+                    throw new IOException("audio_query failed: response body is null");
+                }
+                final var queryData = responseBody.string();
+                final Map <String, Object> map = SharevoxSynthesis.gson.fromJson(queryData, new TypeToken <Map <String, Object>>() {
+                }.getType());
+                map.put("outputSamplingRate", SharevoxSynthesis.OUTPUT_SAMPLING_RATE);
+                return SharevoxSynthesis.gson.toJson(map);
+            }
         }
+    }
 
-        var queryData = queryResponse.body().string();
 
-        final var gson = new Gson();
-        final var listType = new TypeToken <Map <String, Object>>() {
-        }.getType();
-        final Map <String, Object> map = gson.fromJson(queryData, listType);
-        map.put("outputSamplingRate", 16000);
-        queryData = gson.toJson(map);
+    private static ResponseBody executeSynthesis(final String queryData, final int speaker, final boolean enableInterrogativeUpspeak)
+            throws IOException {
 
-        // 音声合成のリクエスト前の終了時間とログ出力
-        final var preSynthesisTime = System.currentTimeMillis();
-        System.out.println("audio_query処理時間: " + (preSynthesisTime - startTime) + " ms");
-
-        final var synthUrlBuilder = HttpUrl.parse("http://localhost:50025/synthesis").newBuilder();
-        synthUrlBuilder.addQueryParameter("speaker", String.valueOf(speaker));
-        synthUrlBuilder.addQueryParameter("enable_interrogative_upspeak", String.valueOf(enableInterrogativeUpspeak));
-        final var synthUrl = synthUrlBuilder.build().toString();
-
-        final var mediaType = MediaType.get("application/json");
-        final var synthRequestBody = RequestBody.create(queryData, mediaType);
-
+        final var synthUrl = HttpUrl.parse(SharevoxSynthesis.BASE_URL + SharevoxSynthesis.SYNTHESIS_ENDPOINT)
+                .newBuilder()
+                .addQueryParameter("speaker", String.valueOf(speaker))
+                .addQueryParameter("enable_interrogative_upspeak", String.valueOf(enableInterrogativeUpspeak))
+                .build();
+        final var synthRequestBody = RequestBody.create(queryData, SharevoxSynthesis.JSON);
         final var synthRequest = new Request.Builder()
                 .url(synthUrl)
                 .post(synthRequestBody)
                 .addHeader("accept", "audio/wav")
                 .addHeader("Content-Type", "application/json")
                 .build();
-        final var synthResponse = SharevoxSynthesis.httpClient.newCall(synthRequest).execute();
-        if (!synthResponse.isSuccessful()) {
-            throw new IOException("synthesis failed: " + synthResponse);
+
+        final var response = SharevoxSynthesis.httpClient.newCall(synthRequest).execute();
+        if (!response.isSuccessful()) {
+            throw new IOException("synthesis failed: HTTP code " + response.code());
         }
-
-        // 音声合成のリクエスト後の終了時間とログ出力
-        final var postSynthesisTime = System.currentTimeMillis();
-        System.out.println("synthesis処理時間: " + (postSynthesisTime - preSynthesisTime) + " ms");
-        System.out.println("合計処理時間: " + (postSynthesisTime - startTime) + " ms");
-
-        return synthResponse.body();
+        return response.body(); // Note: The caller is responsible for closing this ResponseBody.
     }
 }
